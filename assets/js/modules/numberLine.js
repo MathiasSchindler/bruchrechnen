@@ -18,7 +18,8 @@ function generatePositionOnNumberLine(maxValue, divisions) {
   const totalSteps = maxValue * divisions;
   const step = randomInt(1, totalSteps - 1); // Nicht genau 0 oder Maximum
   
-  const fraction = simplifyFraction({ numerator: step, denominator: divisions });
+  // FEHLER BEHOBEN: Der Nenner muss totalSteps sein, nicht divisions!
+  const fraction = simplifyFraction({ numerator: step, denominator: totalSteps });
   return fraction;
 }
 
@@ -52,7 +53,8 @@ function createNumberLineVisualization(maxValue, divisions, targetFraction = nul
   
   // Zielpfeil (wenn showAnswer true ist)
   if (targetFraction && showAnswer) {
-    const targetStep = (targetFraction.numerator * totalSteps) / (targetFraction.denominator * divisions);
+    // FEHLER BEHOBEN: Korrekte Pfeil-Position berechnen
+    const targetStep = (targetFraction.numerator * totalSteps) / targetFraction.denominator;
     const leftPercent = (targetStep / totalSteps) * 100;
     visualization += '<div style="height: 15px; position: relative; margin-bottom: 3px;">';
     visualization += `<div style="position: absolute; left: ${leftPercent}%; transform: translateX(-50%); color: #4f46e5; font-size: 20px; font-weight: bold;">↓</div>`;
@@ -166,7 +168,8 @@ const numberLine = {
         let wrongFraction;
         do {
           const wrongStep = randomInt(1, maxValue * divisions - 1);
-          wrongFraction = simplifyFraction({ numerator: wrongStep, denominator: divisions });
+          // FEHLER BEHOBEN: Korrekte Nenner für Distraktoren
+          wrongFraction = simplifyFraction({ numerator: wrongStep, denominator: maxValue * divisions });
         } while (
           wrongFraction.numerator === targetFraction.numerator && 
           wrongFraction.denominator === targetFraction.denominator

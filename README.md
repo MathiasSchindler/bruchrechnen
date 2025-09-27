@@ -1,6 +1,6 @@
 # Bruchtrainer
 
-Eine kleine, modulare HTML-/JavaScript-Anwendung zum Üben von Brüchen für Kinder. Enthält Aufgaben zum Umwandeln, Kürzen, Erweitern sowie Rechnen mit Brüchen. Die Oberfläche ist bewusst leichtgewichtig gehalten und lässt sich einfach um neue Aufgabentypen erweitern. Das Programm wurde größtenteils mittels GPT 5 Codex und mittels Claude Sonnet 4 erstellt.
+Eine kleine, modulare HTML-/JavaScript-Anwendung zum Üben von Brüchen für Kinder. Enthält Aufgaben zum Umwandeln, Kürzen, Erweitern sowie Rechnen mit Brüchen. Die Oberfläche ist bewusst leichtgewichtig gehalten und lässt sich einfach um neue Aufgabentypen erweitern.
 
 ## Features
 

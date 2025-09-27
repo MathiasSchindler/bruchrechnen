@@ -29,6 +29,12 @@ function generateDetectiveCase() {
             denominator: a.denominator + b.denominator 
           });
           
+          // Stelle sicher, dass das Ergebnis tatsächlich falsch ist
+          if (studentAnswer.numerator === correctAnswer.numerator && studentAnswer.denominator === correctAnswer.denominator) {
+            // Wenn zufällig gleich, ändere die Zahlen
+            studentAnswer = { numerator: correctAnswer.numerator + 1, denominator: correctAnswer.denominator + 1 };
+          }
+          
           const aDisplay = formatFractionForDisplay(a);
           const bDisplay = formatFractionForDisplay(b);
           
@@ -51,6 +57,12 @@ function generateDetectiveCase() {
             denominator: a.denominator * b.numerator 
           });
           
+          // Stelle sicher, dass das Ergebnis falsch ist
+          if (studentAnswer.numerator === correctAnswer.numerator && studentAnswer.denominator === correctAnswer.denominator) {
+            // Wenn zufällig gleich, nimm andere Zahlen
+            studentAnswer = { numerator: correctAnswer.numerator + 1, denominator: correctAnswer.denominator };
+          }
+          
           const aDisplay = formatFractionForDisplay(a);
           const bDisplay = formatFractionForDisplay(b);
           
@@ -67,11 +79,23 @@ function generateDetectiveCase() {
           let b = { numerator: randomInt(1, a.numerator - 1), denominator: a.denominator };
           correctAnswer = simplifyFraction(subtractFractions(a, b));
           
-          // Typischer Fehler: Reihenfolge vertauscht
-          studentAnswer = simplifyFraction(subtractFractions(b, a));
-          // Da das Ergebnis negativ wäre, nehmen wir den Betrag
-          if (studentAnswer.numerator < 0) {
-            studentAnswer.numerator = Math.abs(studentAnswer.numerator);
+          // Typischer Fehler: Reihenfolge vertauscht - aber stelle sicher, dass das Ergebnis falsch ist!
+          let tempAnswer = subtractFractions(b, a);
+          if (tempAnswer.numerator < 0) {
+            tempAnswer.numerator = Math.abs(tempAnswer.numerator);
+          }
+          studentAnswer = simplifyFraction(tempAnswer);
+          
+          // Stelle sicher, dass studentAnswer != correctAnswer
+          if (studentAnswer.numerator === correctAnswer.numerator && studentAnswer.denominator === correctAnswer.denominator) {
+            // Falls sie gleich sind, ändere die Aufgabe leicht
+            a.numerator += 1;
+            correctAnswer = simplifyFraction(subtractFractions(a, b));
+            tempAnswer = subtractFractions(b, a);
+            if (tempAnswer.numerator < 0) {
+              tempAnswer.numerator = Math.abs(tempAnswer.numerator);
+            }
+            studentAnswer = simplifyFraction(tempAnswer);
           }
           
           const aDisplay = formatFractionForDisplay(a);
@@ -113,19 +137,25 @@ function generateDetectiveCase() {
         const correctAnswer = simplifyFraction(expandedFraction);
         
         // Fehler: Nur Zähler oder nur Nenner gekürzt
-        const wrongDivisor = randomChoice([2, 3]);
-        const studentAnswer = {
-          numerator: Math.floor(expandedFraction.numerator / wrongDivisor),
-          denominator: expandedFraction.denominator // Nenner nicht gekürzt!
-        };
+        let studentAnswer;
+        const attempts = [
+          { numerator: Math.floor(expandedFraction.numerator / factor), denominator: expandedFraction.denominator }, // Nur Zähler gekürzt
+          { numerator: expandedFraction.numerator, denominator: Math.floor(expandedFraction.denominator / factor) }, // Nur Nenner gekürzt
+          { numerator: Math.floor(expandedFraction.numerator / 2), denominator: Math.floor(expandedFraction.denominator / 3) } // Verschiedene Faktoren
+        ];
+        
+        // Wähle einen Fehler, der nicht zufällig richtig ist
+        studentAnswer = attempts.find(attempt => 
+          attempt.numerator !== correctAnswer.numerator || attempt.denominator !== correctAnswer.denominator
+        ) || attempts[0];
         
         const originalDisplay = formatFractionForDisplay(expandedFraction);
         const problem = `Kürze ${originalDisplay.html}`;
         
         const evidence = {
           mistake: "incomplete-simplification", 
-          clue1: `${studentName} hat nur den Zähler durch ${wrongDivisor} geteilt: ${expandedFraction.numerator} ÷ ${wrongDivisor} = ${studentAnswer.numerator}`,
-          clue2: `Der Nenner blieb unverändert bei ${studentAnswer.denominator}`,
+          clue1: `${studentName} hat nur einen Teil gekürzt, aber nicht beide Zahlen durch den gleichen Faktor geteilt`,
+          clue2: `Der Nenner und Zähler müssen durch die gleiche Zahl geteilt werden`,
           clue3: `Beim Kürzen muss man Zähler UND Nenner durch die gleiche Zahl teilen! Hier durch ${factor}.`
         };
         
