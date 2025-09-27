@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bruchtrainer</title>
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="branding">
+        <h1>Bruchtrainer</h1>
+        <p>Übe gemischte und unechte Brüche mit zufällig erzeugten Aufgaben.</p>
+      </div>
+      <div class="mode-selector">
+        <label for="exercise-mode">Aufgabenmodus</label>
+        <select id="exercise-mode"></select>
+        <div class="difficulty-controls">
+          <label for="difficulty-select">Schwierigkeit</label>
+          <select id="difficulty-select">
+            <option value="auto">Automatisch</option>
+          </select>
+          <span id="difficulty-label" class="difficulty-label" aria-live="polite"></span>
+        </div>
+        <button id="start-session" class="primary">Los geht's</button>
+      </div>
+    </header>
+
+    <main class="app-main" aria-live="polite">
+      <section class="problem-card" data-state="idle">
+        <header>
+          <h2 id="exercise-title">Wähle einen Modus, um zu starten</h2>
+          <p id="exercise-description"></p>
+        </header>
+        <div class="problem-content">
+          <div id="problem-statement" class="problem-statement"></div>
+          <details id="problem-hint" class="hint" hidden>
+            <summary class="hint-title">Tipp anzeigen</summary>
+            <div class="hint-body"></div>
+          </details>
+          <form id="answer-form" novalidate>
+            <div id="input-area" class="input-area"></div>
+            <div class="form-actions">
+              <button type="submit" class="primary" id="submit-answer" disabled>Antwort prüfen</button>
+              <button type="button" id="skip-problem" class="ghost" disabled>Nächste Aufgabe</button>
+            </div>
+          </form>
+          <div id="feedback" class="feedback" role="status"></div>
+        </div>
+      </section>
+
+      <aside class="session-stats" aria-label="Fortschritt">
+        <h3>Fortschritt</h3>
+        <dl>
+          <div>
+            <dt>Bearbeitete Aufgaben</dt>
+            <dd id="stat-total">0</dd>
+          </div>
+          <div>
+            <dt>Richtige Antworten</dt>
+            <dd id="stat-correct">0</dd>
+          </div>
+          <div>
+            <dt>Genauigkeit</dt>
+            <dd id="stat-accuracy">0%</dd>
+          </div>
+          <div>
+            <dt>Aktuelle Serie</dt>
+            <dd id="stat-streak">0</dd>
+          </div>
+        </dl>
+        <div class="badge-strip" id="badge-strip" aria-live="polite">
+          <p class="badge-title">Auszeichnungen</p>
+          <div class="badges" id="badge-list"></div>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="app-footer">
+      <p>
+        Tipp: Verwende den Mischmodus, um alle Aufgabentypen durcheinander zu üben.
+      </p>
+    </footer>
+
+    <template id="fraction-input-template">
+      <fieldset class="fraction-input" aria-label="Bruch eingeben">
+        <legend class="visually-hidden">Bruch</legend>
+        <div class="fraction-input-grid">
+          <input
+            type="number"
+            class="fraction-part"
+            name="numerator"
+            placeholder="Zähler"
+            step="1"
+            required
+          />
+          <span class="fraction-input-bar" aria-hidden="true"></span>
+          <input
+            type="number"
+            class="fraction-part"
+            name="denominator"
+            placeholder="Nenner"
+            step="1"
+            min="1"
+            required
+          />
+        </div>
+      </fieldset>
+    </template>
+
+    <template id="mixed-fraction-input-template">
+      <fieldset class="mixed-fraction-input" aria-label="Gemischten Bruch eingeben">
+        <legend class="visually-hidden">Gemischter Bruch</legend>
+        <input type="number" class="mixed-whole" name="whole" placeholder="Ganz" required />
+        <div class="fraction-wrapper"></div>
+      </fieldset>
+    </template>
+
+    <template id="multiple-choice-template">
+      <fieldset class="multiple-choice" aria-label="Antwort auswählen">
+        <legend class="visually-hidden">Mehrfachauswahl</legend>
+      </fieldset>
+    </template>
+
+    <template id="cloze-template">
+      <fieldset class="cloze-input" aria-label="Lückentext ausfüllen">
+        <legend class="visually-hidden">Lückentext</legend>
+        <div class="cloze-row"></div>
+      </fieldset>
+    </template>
+
+    <script type="module" src="assets/js/app.js"></script>
+  </body>
+</html>
